@@ -15,13 +15,16 @@ def bb_intersection_over_union(boxA, boxB):
         interArea = (abs(xB - xA) +1) * (abs(yB - yA) +1) #相交面积
     else:
         interArea=0
+
     # compute the area of both the prediction and ground-truth
     # rectangles
     boxAArea = (abs(boxA[2] - boxA[0])+1 ) * (abs(boxA[3] - boxA[1])+1 ) # A面积
     boxBArea = (abs(boxB[2] - boxB[0])+1) * (abs(boxB[3] - boxB[1]) +1) # B面积
+
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth
     # areas - the interesection area
+
     iou = interArea / float(boxAArea + boxBArea - interArea)
 
     # return the intersection over union value
@@ -46,6 +49,7 @@ basic_info.sort(key=lambda l:(l[9],l[10],l[0],l[1],l[4],l[5]))
 for i in range(np.shape(basic_info)[0]):
     basic_info[i].append(re.findall(r'(.+?).mp?4_', basic_info[i][10])[0]) #index11 mp4
     basic_info[i].append(int(re.findall(r'mp?4_(.+?).jpg',basic_info[i][10])[0])) #index 12 frame
+
 basic_infopd=pd.DataFrame(basic_info)
 basic_infopd.columns = ['x1', 'y1', 'x2', 'y2', 'x3','y3','x4', 'y4', 'angle', 'id', 'pic','mp','frame']
 basic_infopd['group_sort']=basic_infopd[['x1']].astype(int).groupby([basic_infopd['id'],basic_infopd['mp'],basic_infopd['frame']]).rank(ascending=0,method='dense')
@@ -89,13 +93,3 @@ basic_infopd.insert(15,'minframe', min_frame)
 #所有的帧和其上一帧标记框的IOU
 basic_infopd.to_csv(r'./data/angle_minframe_group.csv')
 np.save(r'.\data\all_frame_mark_IOU_min',basic_infopd)
-
-
-'''
-i=21280
-bb_intersection_over_union([int(basic_info[i-2][0]), int(basic_info[i-2][1]), int(basic_info[i-2][4]), int(basic_info[i-2][5])],
-                           [int(basic_info[i][0]), int(basic_info[i][1]), int(basic_info[i][4]), int(basic_info[i][5])])
-for i in range(np.shape(basic_info)[0]):
-    if basic_info[i][-1]=='2_01_20180525_163802000.mp4_458.jpg':
-        print(i)
-'''
