@@ -1,0 +1,44 @@
+import numpy as np
+import pandas as pd
+import random as rdm
+
+#随机从序列中采样图片文件
+all_use=np.load(r'.\data\frame_use_all.npy')
+
+raw_group=[]
+for i in range(np.shape(all_use)[0]):
+    l=[all_use[i,9],all_use[i,11],all_use[i,13]]
+    if l not in raw_group:
+        raw_group.append(l)
+
+all_choose=[]
+file_choose=[]
+for i in range(np.shape(raw_group)[0]):
+    file_group_list=all_use[np.where(np.logical_and(all_use[:,9]==raw_group[i][0],all_use[:,11]==raw_group[i][1],all_use[:,13]==raw_group[i][2])),10][0].tolist()
+    if np.shape(file_group_list)[0]>=8:
+        choose_list_file=rdm.sample(file_group_list,8)
+    else:
+        choose_list_file = file_group_list
+    file_choose.append(choose_list_file)
+
+np.save(r'.\data\file_choose1',file_choose)
+
+# save
+f = open(r'.\data\file_choose1.txt','w')
+for one in file_choose:
+    f.write("%s\n"%one)
+f.close()
+
+
+#匹配该图片文件的详细信息
+
+file_choose=np.load(r'.\data\file_choose1.npy').tolist()
+
+all_frame_pic=[]
+for one_group in file_choose:
+    frame_pic=[]
+    for one_pic in one_group:
+        frame_pic.append(all_use[np.where(all_use[:,10]==one_pic)].tolist())
+    all_frame_pic.append(frame_pic)
+
+np.save(r'.\data\all_choose1',all_frame_pic)
