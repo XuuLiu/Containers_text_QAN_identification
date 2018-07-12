@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import random as rdm
 
-#随机从序列中采样图片文件
+#随机从序列中采样图片文件，很不科学，不采用
 all_use=np.load(r'.\data\frame_use_all.npy')
 
 raw_group=[]
