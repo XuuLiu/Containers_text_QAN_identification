@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 
+#因为有些样本的标定是有额外错误的，此时是利用iou检测哪些标定是错误的，并删除
+
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
