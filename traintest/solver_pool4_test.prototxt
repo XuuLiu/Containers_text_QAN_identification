@@ -1,4 +1,4 @@
-net: "/data/liuxu/container_qan/prototxt/container_test_pool4.prototxt"
+net: "/data/liuxu/container_qan/prototxt/test_pool4.prototxt"
 
 test_iter: 3485 #218255 #84765    #132515  #7559  
 
