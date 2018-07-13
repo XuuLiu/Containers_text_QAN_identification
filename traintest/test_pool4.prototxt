@@ -1,0 +1,612 @@
+# Enter your network definition here.
+# Use Shift+Enter to update the visualization.
+# Enter your network definition here.
+# Use Shift+Enter to update the visualization.name:"alabo_chepai_attention_simple"
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "recog_label1"
+  include { phase: TRAIN }
+  transform_param {
+    #scale: 0.00390625
+	scale: 0.0078125
+	mean_value: 128
+  }
+	image_data_param{
+	   new_height: 64
+	   new_width: 192
+           source: "/data/liuxu/container_qan/caffe_file_list_train.txt"
+           root_folder: ""
+	   num_labels:20
+	   batch_size:256 #batch_size?
+	   shuffle: true
+	}
+}
+
+
+layer {
+  name: "data"
+  type: "ImageData"
+  top: "data"
+  top: "recog_label1"
+  include { phase: TEST }
+  transform_param {
+    #scale: 0.00390625
+	scale: 0.0078125
+	mean_value: 128
+  }
+  image_data_param{
+    new_height: 64
+    new_width: 192
+    source: "/data/liuxu/container_qan/caffe_file_list_test.txt"
+    root_folder: ""
+    num_labels: 20
+    batch_size: 1
+    shuffle: false
+  }
+}
+
+layer {
+  name: "permutelabel"
+  type: "Permute"
+  bottom: "recog_label1"
+  top: "recog_label"
+  permute_param {
+  order: 1
+  order: 0
+  }
+}
+#####################################################################################
+
+######################################################################################
+layer {
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+ layer {  
+  name: "relu1"
+  type: "ReLU"
+  bottom: "conv1"  
+  top: "relu1"  
+}  
+
+layer {
+  name: "pool1"
+  type: "Pooling"
+  bottom: "relu1"
+  top: "pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2 # pool over a 2x2 region
+    stride: 2      # step two pixels (in the bottom blob) between pooling regions
+  }
+}
+######################################################################################
+layer {
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 128
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+ layer {  
+  name: "relu2"  
+  type: "ReLU"  
+  bottom: "conv2"  
+  top: "relu2"  
+}
+
+layer {
+  name: "pool2"
+  type: "Pooling"
+  bottom: "relu2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2 # pool over a 2x2 region
+    stride: 2      # step two pixels (in the bottom blob) between pooling regions
+  }
+}
+######################################################################################
+
+layer {
+  name: "conv3"
+  type: "Convolution"
+  bottom: "pool2"
+  top: "conv3"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+layer {
+  name: "conv3_bn"
+  type: "BatchNorm"
+  bottom: "conv3"
+  top: "conv3_bn"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+
+ layer {  
+  name: "relu3"  
+  type: "ReLU"  
+  bottom: "conv3_bn"  
+  top: "relu3"
+}
+######################################################################################
+layer {
+  name: "conv4"
+  type: "Convolution"
+  bottom: "relu3"
+  top: "conv4"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+ layer {
+  name: "relu4"  
+  type: "ReLU"  
+  bottom: "conv4"  
+  top: "relu4"
+}
+
+layer {
+  name: "pool3"
+  type: "Pooling"
+  bottom: "relu4"
+  top: "pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2 # pool over a 2x2 region
+    stride_w: 1
+	stride_h: 2
+	pad_w: 1
+	pad_h: 0
+  }
+}
+######################################################################################
+layer {
+  name: "conv5"
+  type: "Convolution"
+  bottom: "pool3"
+  top: "conv5"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+layer {
+  name: "conv5_bn"
+  type: "BatchNorm"
+  bottom: "conv5"
+  top: "conv5_bn"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+
+ layer {
+  name: "relu5"  
+  type: "ReLU"  
+  bottom: "conv5_bn"  
+  top: "relu5"
+}
+######################################################################################
+layer {
+  name: "conv6"
+  type: "Convolution"
+  bottom: "relu5"
+  top: "conv6"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 3
+    stride: 1
+	pad: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+ layer {
+  name: "relu6"  
+  type: "ReLU"  
+  bottom: "conv6"  
+  top: "relu6"
+}
+
+layer {
+  name: "pool4"
+  type: "Pooling"
+  bottom: "relu6"
+  top: "pool4"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2 # pool over a 2x2 region
+    stride_w: 1
+	stride_h: 2
+	pad_w: 1
+	pad_h: 0
+  }
+}
+######################################################################################
+layer {
+  name: "conv7"
+  type: "Convolution"
+  bottom: "pool4"
+  top: "conv7"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 256
+    kernel_size: 2
+    stride: 1
+	pad: 0
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+
+layer {
+  name: "conv7_bn"
+  type: "BatchNorm"
+  bottom: "conv7"
+  top: "conv7_bn"
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+  param {
+    lr_mult: 0
+  }
+}
+
+ layer {
+  name: "relu7"  
+  type: "ReLU"  
+  bottom: "conv7_bn"  
+  top: "relu7"
+}
+
+########################################################generate score
+layer {
+  name: "fc1_s"
+  type: "InnerProduct"
+  bottom: "pool4"
+  top: "fc1_s"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+	#weight_filler {
+     # type: "xavier"
+    #}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer{
+    name: "reshape_s1"
+    bottom:"fc1_s"
+    top:"reshape_s1"
+    type:"Reshape"
+    reshape_param{
+        shape{
+            dim:-1
+            dim:1
+        }
+    }
+}
+
+
+###############
+
+
+#layer{
+#    name:"score_output"
+#    bottom:"reshape_s1"
+#    top:"score_output"
+#    type:"Sigmoid"
+#}
+
+layer{
+    name:"score_output"
+    bottom:"reshape_s1"
+    top:"score_output"
+    type:"Sigmoid"
+    #type:"TanH"
+}
+
+############################################
+
+
+
+##########################################
+#
+## compute cont
+#layer {
+#  name: "cont"
+#  type: "SeqMask"
+#  bottom: "recog_label"
+#  top: "cont"
+#  att_param {
+#	eos: 38
+#  }
+#}
+#
+#  
+## shift one label
+#layer {
+#  name: "shiftseq1"
+#  type: "ShiftSeq"
+#  bottom: "recog_label"
+#  top: "recog_label_input"
+#  att_param{
+#    bos: 36
+#  }
+#}
+#
+#######################################################################################
+#
+#layer {
+## 65 * 512
+#  name: "axis-swap"
+#  type: "AxisSwap"
+#  bottom: "relu7"
+#  top: "concat_pool"
+#  axis_swap_param {
+#    max_width: 147
+#  }
+#}
+#
+##layer {
+##  name: "lstm1"
+# # type: "Curnn"
+# # bottom: "concat_pool"
+# # top: "concat_pool1"
+# # curnn_param {
+# #   hidden_states: 128
+##	num_layers: 1
+##	bidirectional: 1
+##	mode: 2 # 0:RNN sigmoid   1:RNN tanh  2:LSTM 3:GRU
+##	dropout: 0
+# #   weight_filler {
+# #     type: "uniform"
+#  #    min: -0.08
+#  #    max: 0.08
+#  #  }
+# #   bias_filler {
+#  #    type: "constant"
+#  #    value: 0
+#  #  }
+# # }
+##}
+#
+#layer {
+#    name: "reshape_x"
+#    type: "Reshape"
+#    bottom: "concat_pool"
+#   top: "concat_pool1"
+#    reshape_param {
+#      shape {
+#        dim: -1  # inputLength
+#        dim: 1  # batch size
+#        dim: 256
+#        #dim: -1 # infer it from the other dimensions
+#      }
+#    }
+#  }
+#  
+## 100 * 2 * 512
+#layer {
+#  name: "RNNDecWT"
+#  type: "RNNDecWT"
+#  bottom: "concat_pool1"
+#  bottom: "cont"
+#  bottom: "recog_label_input"
+#  top: "RNNDec"
+#  recurrent_param {
+#    num_output: 256
+#    weight_filler {
+#      type: "uniform"
+#      min: -0.08
+#      max: 0.08
+#    }
+#    bias_filler {
+#      type: "constant"
+#      value: 0
+#    }
+#  }
+#
+#  att_param {
+#    type: 0
+##	loc_dim: 256
+##	loc_size: 5
+#	bos: 36
+#	embed_input_dim: 39
+#	embed_num_output: 100
+#  }
+#}
+#
+#######################################################################################
+#layer {
+#  name: "SoftmaxLoss"
+#  type: "AttSoftmaxWithLoss"
+#  bottom: "RNNDec"
+#  bottom: "recog_label"
+#  top: "SoftmaxLoss"
+#  loss_weight: 1
+#  ctc_param {
+#    axis: 2
+#  }
+#  softmax_param {
+#    axis: 2
+#  }
+#
+#  att_param {
+#    eos: 38
+#    batch_balance: 39
+#    loss_balance_delta: 1
+#  }
+#}
+#
+######################################################################################
+#layer {
+#  name: "softmax"
+#  type: "Softmax"
+#  bottom: "RNNDec"
+#  top: "softmax"
+#  include { phase: TEST }
+#  softmax_param {
+#    axis: 2
+#  }
+#}
+#
+#layer {
+#  name: "accuracy"
+#  type: "AttAccuracy"
+#  bottom: "softmax"
+#  bottom: "recog_label"
+#  top: "accuracy_recog"
+#  include { phase: TEST }
+#  att_param {
+##  has_multi_out: true
+##  multi_out: 27600
+##  multi_out: 68000
+##  multi_out: 76000
+#    str_map: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$_#"
+#	eos: 38
+#  }
+#}
