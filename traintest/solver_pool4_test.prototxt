@@ -1,0 +1,28 @@
+net: "/data/liuxu/container_qan/prototxt/container_test_pool4.prototxt"
+
+test_iter: 3485 #218255 #84765    #132515  #7559  
+
+test_interval: 200
+
+base_lr: 0
+
+lr_policy: "step"
+momentum: 0.95
+delta: 1e-8
+weight_decay: 0.0005
+
+stepsize: 10000
+
+display: 200
+
+max_iter: 1
+
+snapshot: 400
+
+snapshot_prefix: "/data/liuxu/container_qan/model_test/"
+
+solver_mode: GPU
+device_id: 7
+
+#type: "AdaDelta"
+type: "SGD"
