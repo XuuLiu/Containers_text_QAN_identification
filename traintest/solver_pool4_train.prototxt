@@ -1,4 +1,4 @@
-net: "/data/liuxu/container_qan/prototxt/container_pool4.prototxt"
+net: "/data/liuxu/container_qan/prototxt/train_pool4.prototxt"
 test_iter: 147  #933 #147 786
 
 test_interval: 100
