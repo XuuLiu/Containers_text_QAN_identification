@@ -11,4 +11,6 @@ Data_perpare:
 2_3_2random_sample_angle: 根据倾斜角度大于等于9和小于9作为分层采样的标准，
 3_1patch_join:一组序列拼接为一个图像
 4_1generate_file_info: 为caffe训练制作文本信息
-
+5_1read_test_file: 读取测试数据集，并筛选抽样
+5_2test_result:测试结果拼接
+6_1result_stat:测试结果统计
